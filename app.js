@@ -10,7 +10,7 @@ var addon = app
   .scopes('send_notification');
 
 addon.webhook('room_message', /^\/till$/, function*() {
-  var target = moment().hour(16).minute(0).second(0).utc(),
+  var target = moment().zone('-06:00').hour(16).minute(0).second(0).utc(),
     now = moment.utc(),
     diff = target.diff(now);
 
