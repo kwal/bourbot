@@ -1,0 +1,28 @@
+{
+  "name": "bourbot",
+  "displayName": "Bourbot",
+  "version": "0.0.1",
+  "description": "Tells you how long until you can enjoy some delicious libations",
+  "scripts": {
+    "start": "node --harmony app.js",
+    "tunnel": "./ngrok 3000"
+  },
+  "development": {
+    "port": 3000
+  },
+  "production": {
+    "localBaseUrl": "https://bourbot.herokuapp.com",
+    "redisEnv": "REDISCLOUD_URL",
+    "port": "$PORT"
+  },
+  "settings": {
+    "partyTime": "16"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "ac-koa": "^0.2.6",
+    "ac-koa-hipchat": "^0.2.16",
+    "moment": "^2.9.0",
+    "moment-timezone": "^0.3.1"
+  }
+}
