@@ -1,20 +1,28 @@
-var ack = require('ac-koa').require('hipchat'),
-  moment = require('moment'),
+var ack = require('ac-koa'),
+  hipchat = ack.require('hipchat'),
+  moment = require('moment-timezone'),
   pkg = require('./package.json'),
   app = ack(pkg);
 
-var addon = app
-  .addon()
+moment.tz.setDefault(pkg.settings.timezone);
+
+var addon = app.addon()
   .hipchat()
   .allowRoom(true)
   .scopes('send_notification');
 
 addon.webhook('room_message', /^\/till$/, function*() {
-  var target = moment().zone('-05:00').hour(16).minute(0).second(0).utc(),
-    now = moment.utc(),
-    diff = target.diff(now);
+  var now = moment();
+  var target = moment()
+    .hour(pkg.settings.time)
+    .minute(0)
+    .second(0);
 
-  yield this.roomClient.sendNotification('You shall imbibe in ' + moment.duration(diff, "milliseconds").humanize());
+  if (now.isAfter(target)) {
+    target.add(1, 'd');
+  }
+
+  yield this.roomClient.sendNotification('You shall imbibe in ' + target.from(now, true));
 });
 
 app.listen();

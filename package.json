@@ -2,10 +2,11 @@
   "name": "bourbot",
   "displayName": "Bourbot",
   "version": "0.0.1",
-  "description": "Tells you how long until you can enjoy some delicious libations",
+  "description": "HipChat bot that tells you how long until you can enjoy some delicious libations",
+  "author": "Matthew Kowalski",
   "scripts": {
     "start": "node --harmony app.js",
-    "tunnel": "./ngrok 3000"
+    "tunnel": "lt --port 3000"
   },
   "development": {
     "port": 3000
@@ -16,7 +17,8 @@
     "port": "$PORT"
   },
   "settings": {
-    "partyTime": "16"
+    "timezone": "America/Chicago",
+    "time": 16
   },
   "license": "MIT",
   "dependencies": {
@@ -24,5 +26,8 @@
     "ac-koa-hipchat": "^0.2.16",
     "moment": "^2.9.0",
     "moment-timezone": "^0.3.1"
+  },
+  "devDependencies": {
+    "localtunnel": "^1.5.0"
   }
 }
