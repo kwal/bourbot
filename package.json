@@ -3,7 +3,10 @@
   "displayName": "Bourbot",
   "version": "0.0.1",
   "description": "HipChat bot that tells you how long until you can enjoy some delicious libations",
-  "author": "Matthew Kowalski",
+  "author": {
+    "name": "Matthew Kowalski",
+    "url": "https://bitbucket.org/kwal/bourbot"
+  },
   "scripts": {
     "start": "node --harmony app.js",
     "tunnel": "lt --port 3000"
