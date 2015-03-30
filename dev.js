@@ -11,11 +11,12 @@ var tunnel = localtunnel(pkg.development.port, function(err, tunnel) {
 
   nodemon({
     env: {
+      NODE_ENV: 'development',
       LOCAL_BASE_URL: tunnel.url
     },
     ignore: ['.git', 'node_modules'],
     execMap: {
-      'js': 'node --harmony'
+      js: 'node --harmony'
     }
   });
 

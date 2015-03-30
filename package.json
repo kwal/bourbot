@@ -13,21 +13,24 @@
     "dev": "node dev.js"
   },
   "development": {
-    "port": 3000
+    "port": 3000,
+    "redisEnv": "redis://localhost:6379"
   },
   "production": {
-    "localBaseUrl": "https://bourbot.herokuapp.com",
+    "port": "$PORT",
     "redisEnv": "REDISCLOUD_URL",
-    "port": "$PORT"
+    "localBaseUrl": "https://bourbot.herokuapp.com"
   },
   "settings": {
     "timezone": "America/Chicago",
+    "location": "the local watering hole",
     "time": 16
   },
   "license": "MIT",
   "dependencies": {
     "ac-koa": "^0.2.6",
     "ac-koa-hipchat": "^0.2.16",
+    "ac-node": "^0.2.3",
     "moment": "^2.9.0",
     "moment-timezone": "^0.3.1"
   },
