@@ -18,7 +18,7 @@
   },
   "production": {
     "port": "$PORT",
-    "redisEnv": "REDISCLOUD_URL",
+    "redisEnv": "$REDISCLOUD_URL",
     "localBaseUrl": "https://bourbot.herokuapp.com"
   },
   "settings": {
