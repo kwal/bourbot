@@ -11,10 +11,9 @@ if (process.env.NODE_ENV === 'development') {
 
 moment.tz.setDefault(pkg.settings.timezone);
 
-var app = ack(pkg);
-console.log(app.config);
-
-var store = redis(app.config.REDIS_ENV, 'bourbot'),
+var app = ack(pkg),
+  redisUrl = app.config.REDIS_ENV && process.env[app.config.REDIS_ENV],
+  store = redis(redisUrl, 'bourbot'),
   addon = app.addon()
     .hipchat()
     .allowRoom(true)
