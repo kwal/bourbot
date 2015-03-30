@@ -20,7 +20,7 @@ var app = ack(pkg),
     .scopes('send_notification');
 
 function* imbibe(roomClient, room) {
-  var location = yield store.get(room.id + ':location');
+  var location = yield store.get(room.id + ':location') || pkg.settings.location;
   var time = yield store.get(room.id + ':time') || pkg.settings.time;
   var now = moment();
   var target = moment()
@@ -36,7 +36,9 @@ function* imbibe(roomClient, room) {
 }
 
 function* imbibeWhen(roomClient, room, time) {
-  if (!time) {
+  time = (time || '').trim();
+
+  if (!time || !(/^\d+$/g.test(time)) || time < 0 || time > 23) {
     time = pkg.settings.time;
   }
 
@@ -51,6 +53,8 @@ function* imbibeWhen(roomClient, room, time) {
 }
 
 function* imbibeWhere(roomClient, room, location) {
+  location = (location || '').trim();
+  
   if (!location) {
     location = pkg.settings.location;
   }
