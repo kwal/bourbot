@@ -183,8 +183,9 @@ function* imbibe(context) {
   var emoticon, message;
   if (now.isBetween(start, end)) {
     emoticon = yield context.tenantClient.getEmoticon('disapproval');
-    message = util.format('You should have started imbibing %s <img src="%s">',
+    message = util.format('You should have started imbibing %s %s <img src="%s">',
       start.fromNow(),
+      context.sender.name,
       emoticon.url
     );
 
