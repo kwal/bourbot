@@ -62,7 +62,7 @@ function* imbibe(context) {
   }
 }
 
-function* imbibeWhen(context, time) {
+function* setTime(context, time) {
   time = (time || '').trim();
 
   if (!time || !(/^\d+$/g.test(time)) || time < 0 || time > 23) {
@@ -88,7 +88,7 @@ function* imbibeWhen(context, time) {
   });
 }
 
-function* imbibeWhere(context, location) {
+function* setLocation(context, location) {
   location = (location || '').trim();
 
   if (!location) {
@@ -112,10 +112,10 @@ function* imbibeWhere(context, location) {
 addon.webhook('room_message', /^\/imbibe(?:\s+(:)?(.+?)(\s+(.+?))?\s*$)?/i, function*() {
   var command = this.match && this.match[1] === ':' && this.match[2];
   if (command) {
-    if (command === 'where') {
-      yield imbibeWhere(this, this.match[3]);
-    } else if (command === 'when') {
-      yield imbibeWhen(this, this.match[3]);
+    if (command === 'location') {
+      yield setLocation(this, this.match[3]);
+    } else if (command === 'time') {
+      yield setTime(this, this.match[3]);
     }
   } else if (!this.match[1]) {
     yield imbibe(this);
