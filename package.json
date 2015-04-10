@@ -13,7 +13,7 @@
     "dev": "node dev.js"
   },
   "development": {
-    "port": 3000
+    "port": 5000
   },
   "production": {
     "port": "$PORT",
@@ -23,8 +23,9 @@
   "settings": {
     "timezone": "America/Chicago",
     "location": "the local watering hole",
-    "day": "Friday",
-    "time": 16
+    "day": 5,
+    "time": 16,
+    "duration": 2
   },
   "license": "MIT",
   "dependencies": {
