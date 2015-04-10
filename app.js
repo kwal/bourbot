@@ -43,7 +43,7 @@ function* imbibe(context) {
     );
 
     yield context.roomClient.sendNotification(message, {
-      color: 'green',
+      color: 'red',
       format: 'html'
     });
   } else {
