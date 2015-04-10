@@ -22,12 +22,14 @@ var addon = app.addon()
 function* setLocation(context, location) {
   location = (location || '').trim();
 
-  var emoticon;
+  var emoticon, color;
   if (!location) {
     location = pkg.settings.location;
     emoticon = yield context.tenantClient.getEmoticon('unknown');
+    color = 'yellow';
   } else {
     emoticon = yield context.tenantClient.getEmoticon('successful');
+    color = 'gray';
   }
 
   store.set(context.room.id + ':location', location);
@@ -38,7 +40,7 @@ function* setLocation(context, location) {
   );
 
   yield context.roomClient.sendNotification(message, {
-    color: 'gray',
+    color: color,
     format: 'html'
   });
 }
@@ -46,12 +48,14 @@ function* setLocation(context, location) {
 function* setDay(context, day) {
   day = (day || '').trim();
 
-  var emoticon;
+  var emoticon, color;
   if (!day || !(/^\d+$/g.test(day)) || day < 0 || day > 6) {
     day = pkg.settings.day;
     emoticon = yield context.tenantClient.getEmoticon('unknown');
+    color = 'yellow';
   } else {
     emoticon = yield context.tenantClient.getEmoticon('successful');
+    color = 'gray';
   }
 
   store.set(context.room.id + ':day', day);
@@ -63,7 +67,7 @@ function* setDay(context, day) {
   );
 
   yield context.roomClient.sendNotification(message, {
-    color: 'gray',
+    color: color,
     format: 'html'
   });
 }
@@ -71,12 +75,14 @@ function* setDay(context, day) {
 function* setTime(context, time) {
   time = (time || '').trim();
 
-  var emoticon;
+  var emoticon, color;
   if (!time || !(/^\d+$/g.test(time)) || time < 0 || time > 23) {
     time = pkg.settings.time;
     emoticon = yield context.tenantClient.getEmoticon('unknown');
+    color = 'yellow';
   } else {
     emoticon = yield context.tenantClient.getEmoticon('successful');
+    color = 'gray';
   }
 
   store.set(context.room.id + ':time', time);
@@ -92,7 +98,7 @@ function* setTime(context, time) {
   );
 
   yield context.roomClient.sendNotification(message, {
-    color: 'gray',
+    color: color,
     format: 'html'
   });
 }
@@ -100,11 +106,14 @@ function* setTime(context, time) {
 function* setDuration(context, duration) {
   duration = (duration || '').trim();
 
+  var emoticon, color;
   if (!duration || !(/^\d+$/g.test(duration)) || duration < 1 || duration > 24) {
     duration = pkg.settings.duration;
     emoticon = yield context.tenantClient.getEmoticon('unknown');
+    color = 'yellow';
   } else {
     emoticon = yield context.tenantClient.getEmoticon('successful');
+    color = 'gray';
   }
 
   store.set(context.room.id + ':duration', duration);
@@ -115,7 +124,7 @@ function* setDuration(context, duration) {
   );
 
   yield context.roomClient.sendNotification(message, {
-    color: 'gray',
+    color: color,
     format: 'html'
   });
 }
@@ -123,12 +132,14 @@ function* setDuration(context, duration) {
 function* setTimezone(context, timezone) {
   timezone = (timezone || '').trim();
 
-  var emoticon;
+  var emoticon, color;
   if (!timezone || !moment.tz.zone(timezone)) {
     timezone = pkg.settings.timezone;
     emoticon = yield context.tenantClient.getEmoticon('unknown');
+    color = 'yellow';
   } else {
     emoticon = yield context.tenantClient.getEmoticon('successful');
+    color = 'gray';
   }
 
   store.set(context.room.id + ':timezone', timezone);
@@ -139,7 +150,7 @@ function* setTimezone(context, timezone) {
   );
 
   yield context.roomClient.sendNotification(message, {
-    color: 'gray',
+    color: color,
     format: 'html'
   });
 }
@@ -187,7 +198,7 @@ function* imbibe(context) {
     }
 
     emoticon = yield context.tenantClient.getEmoticon('beer');
-    message = util.format('You shall imbibe in %s (%s) at %s <img src="%s">',
+    message = util.format('You shall imbibe %s (%s) at %s <img src="%s">',
       start.fromNow(),
       start.format('dddd LT z'),
       location,
