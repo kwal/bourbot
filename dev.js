@@ -2,7 +2,7 @@ var nodemon = require('nodemon'),
   localtunnel = require('localtunnel'),
   pkg = require('./package.json');
 
-var tunnel = localtunnel(pkg.development.port, function(err, tunnel) {
+localtunnel(pkg.development.port, function(err, tunnel) {
   if (err) {
     throw err;
   }

@@ -23,6 +23,7 @@
   "settings": {
     "timezone": "America/Chicago",
     "location": "the local watering hole",
+    "day": "Friday",
     "time": 16
   },
   "license": "MIT",

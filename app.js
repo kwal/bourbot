@@ -1,4 +1,5 @@
-var ack = require('ac-koa'),
+var util = require('util'),
+  ack = require('ac-koa'),
   hipchat = ack.require('hipchat'),
   redis = require('ac-node').RedisStore,
   moment = require('moment-timezone'),
@@ -13,67 +14,111 @@ moment.tz.setDefault(pkg.settings.timezone);
 
 var app = ack(pkg),
   redisUrl = app.config.REDIS_ENV && process.env[app.config.REDIS_ENV],
-  store = redis(redisUrl, 'bourbot'),
-  addon = app.addon()
-    .hipchat()
-    .allowRoom(true)
-    .scopes('send_notification');
+  store = redis(redisUrl, 'bourbot');
 
-function* imbibe(roomClient, room) {
-  var location = yield store.get(room.id + ':location') || pkg.settings.location;
-  var time = yield store.get(room.id + ':time') || pkg.settings.time;
-  var now = moment();
+var addon = app.addon()
+  .hipchat()
+  .allowRoom(true)
+  .scopes(['send_notification', 'view_group']);
+
+function* imbibe(context) {
+  var location = yield store.get(context.room.id + ':location');
+  location || (location = pkg.settings.location);
+
+  var time = yield store.get(context.room.id + ':time');
+  time || (time = pkg.settings.time);
+
   var target = moment()
+    .day(pkg.settings.day)
     .hour(time)
     .minute(0)
     .second(0);
 
-  if (now.isAfter(target)) {
-    target.add(1, 'd');
-  }
+  var emoticon, message;
+  if (target.isBefore(moment())) {
+    emoticon = yield context.tenantClient.getEmoticon('disapproval');
+    message = util.format('You should have been imbibing %s <img src="%s">',
+      target.fromNow(),
+      emoticon.url
+    );
 
-  yield roomClient.sendNotification('You shall imbibe in ' + target.from(now, true) + ' (' + target.format('LT z') + ') at ' + location);
+    yield context.roomClient.sendNotification(message, {
+      color: 'green',
+      format: 'html'
+    });
+  } else {
+    emoticon = yield context.tenantClient.getEmoticon('beer');
+    message = util.format('You shall imbibe in %s (%s) at %s <img src="%s">',
+      target.fromNow(),
+      target.format('dddd LT z'),
+      location,
+      emoticon.url
+    );
+
+    yield context.roomClient.sendNotification(message, {
+      color: 'green',
+      format: 'html'
+    });
+  }
 }
 
-function* imbibeWhen(roomClient, room, time) {
+function* imbibeWhen(context, time) {
   time = (time || '').trim();
 
   if (!time || !(/^\d+$/g.test(time)) || time < 0 || time > 23) {
     time = pkg.settings.time;
   }
 
-  store.set(room.id + ':time', time);
+  store.set(context.room.id + ':time', time);
 
   var target = moment()
     .hour(time)
     .minute(0)
     .second(0);
 
-  yield roomClient.sendNotification('You shall imbibe at ' + target.format('LT z'));
+  var successfulEmoticon = yield context.tenantClient.getEmoticon('successful');
+  var message = util.format('You shall imbibe at %s <img src="%s">',
+    target.format('LT z'),
+    successfulEmoticon.url
+  );
+
+  yield context.roomClient.sendNotification(message, {
+    color: 'gray',
+    format: 'html'
+  });
 }
 
-function* imbibeWhere(roomClient, room, location) {
+function* imbibeWhere(context, location) {
   location = (location || '').trim();
-  
+
   if (!location) {
     location = pkg.settings.location;
   }
 
-  store.set(room.id + ':location', location);
+  store.set(context.room.id + ':location', location);
 
-  yield roomClient.sendNotification('You shall imbibe at ' + location);
+  var successfulEmoticon = yield context.tenantClient.getEmoticon('successful');
+  var message = util.format('You shall imbibe at %s <img src="%s">',
+    location,
+    successfulEmoticon.url
+  );
+
+  yield context.roomClient.sendNotification(message, {
+    color: 'gray',
+    format: 'html'
+  });
 }
 
 addon.webhook('room_message', /^\/imbibe(?:\s+(:)?(.+?)(\s+(.+?))?\s*$)?/i, function*() {
   var command = this.match && this.match[1] === ':' && this.match[2];
   if (command) {
     if (command === 'where') {
-      yield imbibeWhere(this.roomClient, this.room, this.match[3]);
+      yield imbibeWhere(this, this.match[3]);
     } else if (command === 'when') {
-      yield imbibeWhen(this.roomClient, this.room, this.match[3]);
+      yield imbibeWhen(this, this.match[3]);
     }
   } else if (!this.match[1]) {
-    yield imbibe(this.roomClient, this.room);
+    yield imbibe(this);
   }
 });
 
