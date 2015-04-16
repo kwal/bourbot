@@ -1,7 +1,6 @@
 var util = require('util'),
   ack = require('ac-koa'),
   hipchat = ack.require('hipchat'),
-  redis = require('ac-node').RedisStore,
   moment = require('moment-timezone'),
   pkg = require('./package.json');
 
