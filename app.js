@@ -155,6 +155,22 @@ function* setTimezone(context, timezone) {
   });
 }
 
+function* help(context) {
+  var message = 'Command format: /imbibe <i>command</i> <i>value</i><br/><br/>' +
+    'Available commands:<br/>' +
+    '<b>location</b> - sets location<br/>' +
+    '<b>day</b> - sets day of the week (0 - 6)<br/>' +
+    '<b>time</b> - sets time of day (0 - 23)<br/>' +
+    '<b>duration</b> - sets duration (0 - 23)<br/>' +
+    '<b>timezone</b> - sets <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">timezone</a><br/><br/>' +
+    'Example: /imbibe location My House';
+
+  yield context.roomClient.sendNotification(message, {
+    color: 'green',
+    format: 'html'
+  });
+}
+
 function* imbibe(context) {
   var location = yield store.get(context.room.id + ':location');
   location || (location = pkg.settings.location);
@@ -213,8 +229,8 @@ function* imbibe(context) {
   }
 }
 
-addon.webhook('room_message', /^\/imbibe(?:\s+(:)?(.+?)(\s+(.+?))?\s*$)?/i, function*() {
-  var command = this.match && this.match[1] === ':' && this.match[2];
+addon.webhook('room_message', /^\/imbibe(?:\s+(.+?)(\s+(.+?))?\s*$)?/i, function*() {
+  var command = this.match && this.match[1];
   if (command) {
     if (command === 'location') {
       yield setLocation(this, this.match[3]);
@@ -226,6 +242,8 @@ addon.webhook('room_message', /^\/imbibe(?:\s+(:)?(.+?)(\s+(.+?))?\s*$)?/i, func
       yield setDuration(this, this.match[3]);
     } else if (command === 'timezone') {
       yield setTimezone(this, this.match[3]);
+    } else if (command === 'help') {
+      yield help(this);
     }
   } else if (!this.match[1]) {
     yield imbibe(this);
