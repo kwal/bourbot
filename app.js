@@ -10,11 +10,9 @@ if (process.env.NODE_ENV === 'development') {
   pkg.displayName = 'Bourbot (Dev)';
 }
 
-var app = ack(pkg),
-  redisUrl = app.config.REDIS_ENV && process.env[app.config.REDIS_ENV],
-  store = redis(redisUrl, 'bourbot');
-
-var addon = app.addon()
+var app = ack(pkg);
+var addon = app
+  .addon()
   .hipchat()
   .allowRoom(true)
   .scopes(['send_notification', 'view_group']);
@@ -32,7 +30,7 @@ function* setLocation(context, location) {
     color = 'gray';
   }
 
-  store.set(context.room.id + ':location', location);
+  context.tenantStore.set('location', location);
 
   var message = util.format('You shall imbibe at %s <img src="%s">',
     location,
@@ -58,7 +56,7 @@ function* setDay(context, day) {
     color = 'gray';
   }
 
-  store.set(context.room.id + ':day', day);
+  context.tenantStore.set('day', day);
 
   var target = moment().day(day);
   var message = util.format('You shall imbibe on %s <img src="%s">',
@@ -85,7 +83,7 @@ function* setTime(context, time) {
     color = 'gray';
   }
 
-  store.set(context.room.id + ':time', time);
+  context.tenantStore.set('time', time);
 
   var target = moment()
     .hour(time)
@@ -116,7 +114,7 @@ function* setDuration(context, duration) {
     color = 'gray';
   }
 
-  store.set(context.room.id + ':duration', duration);
+  context.tenantStore.set('duration', duration);
 
   var message = util.format('You shall imbibe for %s hours <img src="%s">',
     duration,
@@ -142,7 +140,7 @@ function* setTimezone(context, timezone) {
     color = 'gray';
   }
 
-  store.set(context.room.id + ':timezone', timezone);
+  context.tenantStore.set('timezone', timezone);
 
   var message = util.format('You shall imbibe relative to %s <img src="%s">',
     timezone,
@@ -172,19 +170,19 @@ function* help(context) {
 }
 
 function* imbibe(context) {
-  var location = yield store.get(context.room.id + ':location');
+  var location = yield context.tenantStore.get('location');
   location || (location = pkg.settings.location);
 
-  var day = yield store.get(context.room.id + ':day');
+  var day = yield context.tenantStore.get('day');
   day || (day = pkg.settings.day);
 
-  var time = yield store.get(context.room.id + ':time');
+  var time = yield context.tenantStore.get('time');
   time || (time = pkg.settings.time);
 
-  var duration = yield store.get(context.room.id + ':duration');
+  var duration = yield context.tenantStore.get('duration');
   duration || (duration = pkg.settings.duration);
 
-  var timezone = yield store.get(context.room.id + ':timezone');
+  var timezone = yield context.tenantStore.get('timezone');
   timezone || (timezone = pkg.settings.timezone);
 
   var now = moment().tz(timezone);
