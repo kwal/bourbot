@@ -72,8 +72,11 @@ function* setDay(context, day) {
 function* setTime(context, time) {
   time = (time || '').trim();
 
-  var emoticon, color;
-  if (!time || !(/^\d+$/g.test(time)) || time < 0 || time > 23) {
+  var timeRegex = /([0-1]{1}[0-9]{1}|20|21|22|23):[0-5]{1}[0-9]{1}/g,
+    emoticon,
+    color;
+
+  if (!time || !timeRegex.test(time)) {
     time = pkg.settings.time;
     emoticon = yield context.tenantClient.getEmoticon('unknown');
     color = 'yellow';
@@ -84,10 +87,7 @@ function* setTime(context, time) {
 
   context.tenantStore.set('time', time);
 
-  var target = moment()
-    .hour(time)
-    .minute(0)
-    .second(0);
+  var target = moment(time, 'HH:mm');
 
   var message = util.format('You shall imbibe at %s <img src="%s">',
     target.format('LT z'),
@@ -157,8 +157,8 @@ function* help(context) {
     'Available commands:<br/>' +
     '<b>location</b> - sets location<br/>' +
     '<b>day</b> - sets day of the week (0 - 6)<br/>' +
-    '<b>time</b> - sets time of day (0 - 23)<br/>' +
-    '<b>duration</b> - sets duration (0 - 23)<br/>' +
+    '<b>time</b> - sets time of day (00:00 - 23:59)<br/>' +
+    '<b>duration</b> - sets duration in hours (0 - 23)<br/>' +
     '<b>timezone</b> - sets <a href="https://en.wikipedia.org/wiki/List_of_tz_database_time_zones">timezone</a><br/><br/>' +
     'Example: /imbibe location My House';
 
@@ -184,14 +184,9 @@ function* imbibe(context) {
   var timezone = yield context.tenantStore.get('timezone');
   timezone || (timezone = pkg.settings.timezone);
 
-  var now = moment().tz(timezone);
-  var start = moment(now)
-    .day(day)
-    .hour(time)
-    .minute(0)
-    .second(0);
-
-  var end = moment(start).add(duration, 'hours');
+  var now = moment().tz(timezone),
+    start = moment(time, 'HH:mm').day(day),
+    end = moment(start).add(duration, 'hours');
 
   var emoticon, message;
   if (now.isBetween(start, end)) {
