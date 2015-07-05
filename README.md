@@ -12,9 +12,9 @@ Available commands:
 
 **day** - sets day of the week (0 - 6)
 
-**time** - sets time of day (0 - 23)
+**time** - sets time of day (00:00 - 23:59)
 
-**duration** - sets duration (0 - 23)
+**duration** - sets duration in hours (0 - 23)
 
 **timezone** - sets [timezone](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)
 
