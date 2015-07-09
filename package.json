@@ -1,7 +1,7 @@
 {
   "name": "bourbot",
   "displayName": "Bourbot",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "HipChat bot that tells you how long until you can enjoy some delicious libations",
   "author": {
     "name": "Matthew Kowalski",
