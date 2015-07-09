@@ -185,7 +185,7 @@ function* imbibe(context) {
   timezone || (timezone = pkg.settings.timezone);
 
   var now = moment().tz(timezone),
-    start = moment(time, 'HH:mm').day(day),
+    start = moment(time, 'HH:mm').tz(timezone).day(day),
     end = moment(start).add(duration, 'hours');
 
   var emoticon, message;
