@@ -1,3 +1,5 @@
+![Bourbot Logo](https://raw.github.com/kwal/bourbot/master/logo.png)
+
 ## Usage
 
 Feel free to use the existing instance at https://bourbot.herokuapp.com
