@@ -29,10 +29,28 @@ function* setLocation(context, location) {
     color = 'gray';
   }
 
-  context.tenantStore.set('location', location);
+  var match, em;
+  var parsedLocation = location;
+  var emoticonExp = /\(([^)]+)\)/g;
+  while ((match = emoticonExp.exec(location)) !== null) {
+    try {
+      em = yield context.tenantClient.getEmoticon(match[1]);
+    } catch (e) {} finally {
+      if (em) {
+        parsedLocation = parsedLocation.replace(
+          match[0],
+          util.format('<img src="%s">', em.url)
+        );
+      }
+
+      em = null;
+    }
+  }
+
+  context.tenantStore.set('location', parsedLocation);
 
   var message = util.format('You shall imbibe at %s <img src="%s">',
-    location,
+    parsedLocation,
     emoticon.url
   );
 
