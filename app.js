@@ -60,15 +60,29 @@ function* setLocation(context, location) {
   });
 }
 
+var dayRegex = [
+	/^[Ss]un(day)?$/g,
+	/^[Mm]on(day)?$/g,
+	/^[Tt]ue(sday)?$/g,
+	/^[Ww]ed(nesday)?$/g,
+	/^[Tt]hu(rsday)?$/g,
+	/^[Ff]ri(day)?$/g,
+	/^[Ss]at(urday)?$/g
+];
 function* setDay(context, day) {
   day = (day || '').trim();
-
+  var dayIndex = dayRegex.length - 1;
+  while(dayIndex >= 0 && !(dayIndex == day || dayRegex[dayIndex].test(day))){
+	  dayIndex--;
+  }
+  
   var emoticon, color;
-  if (!day || !(/^\d+$/g.test(day)) || day < 0 || day > 6) {
+  if (dayIndex < 0) {
     day = pkg.settings.day;
     emoticon = yield context.tenantClient.getEmoticon('unknown');
     color = 'yellow';
   } else {
+	day = dayIndex;
     emoticon = yield context.tenantClient.getEmoticon('successful');
     color = 'gray';
   }
