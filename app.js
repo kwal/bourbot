@@ -61,13 +61,13 @@ function* setLocation(context, location) {
 }
 
 var dayRegex = [
-	/^[Ss]un(day)?$/g,
-	/^[Mm]on(day)?$/g,
-	/^[Tt]ue(sday)?$/g,
-	/^[Ww]ed(nesday)?$/g,
-	/^[Tt]hu(rsday)?$/g,
-	/^[Ff]ri(day)?$/g,
-	/^[Ss]at(urday)?$/g
+	/^Sun(day)?$/i,
+	/^Mon(day)?$/i,
+	/^Tue(sday)?$/i,
+	/^Wed(nesday)?$/i,
+	/^Thu(rsday)?$/i,
+	/^Fri(day)?$/i,
+	/^Sat(urday)?$/i
 ];
 function* setDay(context, day) {
   day = (day || '').trim();
