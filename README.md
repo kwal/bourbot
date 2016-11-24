@@ -12,7 +12,7 @@ Available commands:
 
 **location** - sets location
 
-**day** - sets day of the week (0 - 6)
+**day** - sets day of the week
 
 **time** - sets time of day (00:00 - 23:59)
 

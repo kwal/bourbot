@@ -61,28 +61,29 @@ function* setLocation(context, location) {
 }
 
 var dayRegex = [
-	/^Sun(day)?$/i,
-	/^Mon(day)?$/i,
-	/^Tue(sday)?$/i,
-	/^Wed(nesday)?$/i,
-	/^Thu(rsday)?$/i,
-	/^Fri(day)?$/i,
-	/^Sat(urday)?$/i
+  /^Sun(day)?$/i,
+  /^Mon(day)?$/i,
+  /^Tue(sday)?$/i,
+  /^Wed(nesday)?$/i,
+  /^Thu(rsday)?$/i,
+  /^Fri(day)?$/i,
+  /^Sat(urday)?$/i
 ];
+
 function* setDay(context, day) {
   day = (day || '').trim();
   var dayIndex = dayRegex.length - 1;
-  while(dayIndex >= 0 && !(dayIndex == day || dayRegex[dayIndex].test(day))){
-	  dayIndex--;
+  while (dayIndex >= 0 && !(dayIndex == day || dayRegex[dayIndex].test(day))) {
+    dayIndex--;
   }
-  
+
   var emoticon, color;
   if (dayIndex < 0) {
     day = pkg.settings.day;
     emoticon = yield context.tenantClient.getEmoticon('unknown');
     color = 'yellow';
   } else {
-	day = dayIndex;
+    day = dayIndex;
     emoticon = yield context.tenantClient.getEmoticon('successful');
     color = 'gray';
   }
