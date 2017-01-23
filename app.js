@@ -105,7 +105,7 @@ function* setDay(context, day) {
 function* setTime(context, time) {
   time = (time || '').trim();
 
-  var target = moment(time, ['HH:mm', 'hh:mm a', 'hh:mma'], true);
+  var target = moment(time, ['H:mm', 'h:mm a', 'h:mma'], true);
   var emoticon,
     color;
 
