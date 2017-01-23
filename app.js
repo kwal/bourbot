@@ -105,12 +105,12 @@ function* setDay(context, day) {
 function* setTime(context, time) {
   time = (time || '').trim();
 
-  var timeRegex = /([0-1]{1}[0-9]{1}|20|21|22|23):[0-5]{1}[0-9]{1}/g,
-    emoticon,
+  var target = moment(time, ['HH:mm', 'hh:mm a', 'hh:mma'], true);
+  var emoticon,
     color;
 
-  if (!time || !timeRegex.test(time)) {
-    time = pkg.settings.time;
+  if (!target.isValid()) {
+    target = moment(pkg.settings.time, ['HH:mm']);
     emoticon = yield context.tenantClient.getEmoticon('unknown');
     color = 'yellow';
   } else {
@@ -118,9 +118,7 @@ function* setTime(context, time) {
     color = 'gray';
   }
 
-  context.tenantStore.set('time', time);
-
-  var target = moment(time, 'HH:mm');
+  context.tenantStore.set('time', target.format('HH:mm'));
 
   var message = util.format('You shall imbibe at %s <img src="%s">',
     target.format('LT z'),
